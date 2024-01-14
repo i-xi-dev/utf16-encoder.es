@@ -168,4 +168,36 @@ export namespace Utf16 {
       });
     }
   }
+
+  /** @deprecated */
+  export class BEEncoderStream extends TextEncoding.EncoderStream {
+    constructor(options: EncoderOptions = {}) {
+      super({
+        name: _BE_LABEL,
+        fatal: options?.fatal === true,
+        replacementBytes:
+          _getReplacement(_DEFAULT_REPLACEMENT_CHAR, false).bytes,
+        encode: _encodeBe,
+        prependBOM: options?.prependBOM === true,
+        strict: options?.strict === true,
+        maxBytesPerRune: _MAX_BYTES_PER_RUNE,
+      });
+    }
+  }
+
+  /** @deprecated */
+  export class LEEncoderStream extends TextEncoding.EncoderStream {
+    constructor(options: EncoderOptions = {}) {
+      super({
+        name: _LE_LABEL,
+        fatal: options?.fatal === true,
+        replacementBytes:
+          _getReplacement(_DEFAULT_REPLACEMENT_CHAR, true).bytes,
+        encode: _encodeLe,
+        prependBOM: options?.prependBOM === true,
+        strict: options?.strict === true,
+        maxBytesPerRune: _MAX_BYTES_PER_RUNE,
+      });
+    }
+  }
 }
