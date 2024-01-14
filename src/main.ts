@@ -31,8 +31,12 @@ function _encodeShared(
   let written = 0;
 
   for (const rune of srcString) {
-    read = read + rune.length;
     const codePoint = rune.codePointAt(0) as CodePoint;
+
+    if ((written + (rune.length * Uint16.BYTES)) > dstView.byteLength) {
+      break;
+    }
+    read = read + rune.length;
 
     if (CodePoint.isSurrogateCodePoint(codePoint) !== true) {
       for (let i = 0; i < rune.length; i++) {
