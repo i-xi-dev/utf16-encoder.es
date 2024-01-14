@@ -20,7 +20,7 @@ function _encodeShared(
   dstBuffer: ArrayBuffer,
   dstOffset: SafeInteger,
   options: {
-    fatal: boolean;
+    fatal: boolean; // エンコードのエラーは単独のサロゲートの場合のみ
     replacementBytes: Array<Uint8>;
   },
   littleEndian: boolean,
@@ -129,6 +129,7 @@ function _getReplacement(
 export namespace Utf16 {
   export type EncoderOptions = {
     fatal?: boolean;
+    prependBOM?: boolean;
     strict?: boolean;
   };
 
@@ -140,7 +141,7 @@ export namespace Utf16 {
         replacementBytes:
           _getReplacement(_DEFAULT_REPLACEMENT_CHAR, false).bytes,
         encode: _encodeBe,
-        prependBOM: false,
+        prependBOM: options?.prependBOM === true,
         strict: options?.strict === true,
         maxBytesPerRune: _MAX_BYTES_PER_RUNE,
       });
@@ -154,8 +155,8 @@ export namespace Utf16 {
         fatal: options?.fatal === true,
         replacementBytes:
           _getReplacement(_DEFAULT_REPLACEMENT_CHAR, true).bytes,
-        encode: _encodeBe,
-        prependBOM: false,
+        encode: _encodeLe,
+        prependBOM: options?.prependBOM === true,
         strict: options?.strict === true,
         maxBytesPerRune: _MAX_BYTES_PER_RUNE,
       });
