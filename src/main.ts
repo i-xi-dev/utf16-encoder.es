@@ -133,6 +133,7 @@ export namespace Utf16 {
     strict?: boolean;
   };
 
+  /** @deprecated */
   export class BEEncoder extends TextEncoding.Encoder {
     constructor(options: EncoderOptions = {}) {
       super({
@@ -148,6 +149,7 @@ export namespace Utf16 {
     }
   }
 
+  /** @deprecated */
   export class LEEncoder extends TextEncoding.Encoder {
     constructor(options: EncoderOptions = {}) {
       super({
