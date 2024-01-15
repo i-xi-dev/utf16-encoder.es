@@ -1,7 +1,6 @@
 import {
   CodePoint,
   Rune,
-  SafeInteger,
   StringEx,
   TextEncoding,
   Uint16,
@@ -18,7 +17,6 @@ type _RuneBytes = Array<Uint8>; // [Uint8, Uint8] | [Uint8, Uint8, Uint8, Uint8]
 function _encodeShared(
   srcString: string,
   dstBuffer: ArrayBuffer,
-  dstOffset: SafeInteger,
   options: {
     fatal: boolean; // エンコードのエラーは単独のサロゲートの場合のみ
     replacementBytes: Array<Uint8>;
@@ -41,7 +39,7 @@ function _encodeShared(
     if (CodePoint.isSurrogateCodePoint(codePoint) !== true) {
       for (let i = 0; i < rune.length; i++) {
         dstView.setUint16(
-          dstOffset + written,
+          written,
           rune.charCodeAt(i),
           littleEndian,
         );
@@ -54,7 +52,7 @@ function _encodeShared(
         );
       } else {
         for (const byte of options.replacementBytes) {
-          dstView.setInt8(dstOffset + written, byte);
+          dstView.setInt8(written, byte);
           written = written + Uint8.BYTES;
         }
       }
@@ -70,25 +68,23 @@ function _encodeShared(
 function _encodeBe(
   srcString: string,
   dstBuffer: ArrayBuffer,
-  dstOffset: SafeInteger,
   options: {
     fatal: boolean;
     replacementBytes: Array<Uint8>;
   },
 ): TextEncoderEncodeIntoResult {
-  return _encodeShared(srcString, dstBuffer, dstOffset, options, false);
+  return _encodeShared(srcString, dstBuffer, options, false);
 }
 
 function _encodeLe(
   srcString: string,
   dstBuffer: ArrayBuffer,
-  dstOffset: SafeInteger,
   options: {
     fatal: boolean;
     replacementBytes: Array<Uint8>;
   },
 ): TextEncoderEncodeIntoResult {
-  return _encodeShared(srcString, dstBuffer, dstOffset, options, true);
+  return _encodeShared(srcString, dstBuffer, options, true);
 }
 
 const _DEFAULT_REPLACEMENT_CHAR = "\u{FFFD}";
@@ -105,7 +101,6 @@ function _getReplacement(
       const { written } = _encodeShared(
         replacementRune,
         tmp,
-        0,
         {
           fatal: true,
           replacementBytes: littleEndian
