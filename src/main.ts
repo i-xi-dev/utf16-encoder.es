@@ -14,6 +14,17 @@ const _MAX_BYTES_PER_RUNE = 4;
 
 type _RuneBytes = Array<Uint8>; // [Uint8, Uint8] | [Uint8, Uint8, Uint8, Uint8] ;
 
+// プラットフォームのバイトオーダーでエンコード
+// function _encode(
+//   srcString: string,
+//   dstBuffer: ArrayBuffer,
+//   options: {
+//     fatal: boolean; // エンコードのエラーは単独のサロゲートの場合のみ
+//     replacementBytes: Array<Uint8>;
+//   },
+// ): TextEncoderEncodeIntoResult {
+// }
+
 function _encodeShared(
   srcString: string,
   dstBuffer: ArrayBuffer,
@@ -132,67 +143,81 @@ export namespace Utf16 {
     strict?: boolean;
   };
 
-  /** @deprecated */
-  export class BEEncoder extends TextEncoding.Encoder {
-    constructor(options: EncoderOptions = {}) {
-      super({
-        name: _BE_LABEL,
-        fatal: options?.fatal === true,
-        replacementBytes:
-          _getReplacement(_DEFAULT_REPLACEMENT_CHAR, false).bytes,
-        encode: _encodeBe,
-        prependBOM: options?.prependBOM === true,
-        strict: options?.strict === true,
-        maxBytesPerRune: _MAX_BYTES_PER_RUNE,
-      });
+  // /** @deprecated */
+  // export class Encoder extends TextEncoding.Encoder {
+  // プラットフォームのバイトオーダーでエンコード
+  // }
+
+  // /** @deprecated */
+  // export class EncoderStream extends TextEncoding.EncoderStream {
+  // プラットフォームのバイトオーダーでエンコード
+  // }
+
+  export namespace Be {
+    /** @deprecated */
+    export class Encoder extends TextEncoding.Encoder {
+      constructor(options: EncoderOptions = {}) {
+        super({
+          name: _BE_LABEL,
+          fatal: options?.fatal === true,
+          replacementBytes:
+            _getReplacement(_DEFAULT_REPLACEMENT_CHAR, false).bytes,
+          encode: _encodeBe,
+          prependBOM: options?.prependBOM === true,
+          strict: options?.strict === true,
+          maxBytesPerRune: _MAX_BYTES_PER_RUNE,
+        });
+      }
+    }
+
+    /** @deprecated */
+    export class EncoderStream extends TextEncoding.EncoderStream {
+      constructor(options: EncoderOptions = {}) {
+        super({
+          name: _BE_LABEL,
+          fatal: options?.fatal === true,
+          replacementBytes:
+            _getReplacement(_DEFAULT_REPLACEMENT_CHAR, false).bytes,
+          encode: _encodeBe,
+          prependBOM: options?.prependBOM === true,
+          strict: options?.strict === true,
+          maxBytesPerRune: _MAX_BYTES_PER_RUNE,
+        });
+      }
     }
   }
 
-  /** @deprecated */
-  export class LEEncoder extends TextEncoding.Encoder {
-    constructor(options: EncoderOptions = {}) {
-      super({
-        name: _LE_LABEL,
-        fatal: options?.fatal === true,
-        replacementBytes:
-          _getReplacement(_DEFAULT_REPLACEMENT_CHAR, true).bytes,
-        encode: _encodeLe,
-        prependBOM: options?.prependBOM === true,
-        strict: options?.strict === true,
-        maxBytesPerRune: _MAX_BYTES_PER_RUNE,
-      });
+  export namespace Le {
+    /** @deprecated */
+    export class Encoder extends TextEncoding.Encoder {
+      constructor(options: EncoderOptions = {}) {
+        super({
+          name: _LE_LABEL,
+          fatal: options?.fatal === true,
+          replacementBytes:
+            _getReplacement(_DEFAULT_REPLACEMENT_CHAR, true).bytes,
+          encode: _encodeLe,
+          prependBOM: options?.prependBOM === true,
+          strict: options?.strict === true,
+          maxBytesPerRune: _MAX_BYTES_PER_RUNE,
+        });
+      }
     }
-  }
 
-  /** @deprecated */
-  export class BEEncoderStream extends TextEncoding.EncoderStream {
-    constructor(options: EncoderOptions = {}) {
-      super({
-        name: _BE_LABEL,
-        fatal: options?.fatal === true,
-        replacementBytes:
-          _getReplacement(_DEFAULT_REPLACEMENT_CHAR, false).bytes,
-        encode: _encodeBe,
-        prependBOM: options?.prependBOM === true,
-        strict: options?.strict === true,
-        maxBytesPerRune: _MAX_BYTES_PER_RUNE,
-      });
-    }
-  }
-
-  /** @deprecated */
-  export class LEEncoderStream extends TextEncoding.EncoderStream {
-    constructor(options: EncoderOptions = {}) {
-      super({
-        name: _LE_LABEL,
-        fatal: options?.fatal === true,
-        replacementBytes:
-          _getReplacement(_DEFAULT_REPLACEMENT_CHAR, true).bytes,
-        encode: _encodeLe,
-        prependBOM: options?.prependBOM === true,
-        strict: options?.strict === true,
-        maxBytesPerRune: _MAX_BYTES_PER_RUNE,
-      });
+    /** @deprecated */
+    export class EncoderStream extends TextEncoding.EncoderStream {
+      constructor(options: EncoderOptions = {}) {
+        super({
+          name: _LE_LABEL,
+          fatal: options?.fatal === true,
+          replacementBytes:
+            _getReplacement(_DEFAULT_REPLACEMENT_CHAR, true).bytes,
+          encode: _encodeLe,
+          prependBOM: options?.prependBOM === true,
+          strict: options?.strict === true,
+          maxBytesPerRune: _MAX_BYTES_PER_RUNE,
+        });
+      }
     }
   }
 }

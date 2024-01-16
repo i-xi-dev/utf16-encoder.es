@@ -3,8 +3,8 @@ import { Utf16 } from "../../mod.ts";
 
 const decoder = new TextDecoder("utf-16le");
 
-Deno.test("Utf16.LEEncoder.encode(string)", () => {
-  const encoder = new Utf16.LEEncoder();
+Deno.test("Utf16.Le.Encoder.encode(string)", () => {
+  const encoder = new Utf16.Le.Encoder();
 
   // encode()
   assertStrictEquals(JSON.stringify([...encoder.encode()]), "[]");
@@ -61,8 +61,8 @@ Deno.test("Utf16.LEEncoder.encode(string)", () => {
   );
 });
 
-Deno.test("Utf16.LEEncoder.encode(string) - strict", () => {
-  const encoder = new Utf16.LEEncoder({ strict: true });
+Deno.test("Utf16.Le.Encoder.encode(string) - strict", () => {
+  const encoder = new Utf16.Le.Encoder({ strict: true });
 
   // encode()
   assertThrows(
@@ -128,8 +128,8 @@ Deno.test("Utf16.LEEncoder.encode(string) - strict", () => {
   );
 });
 
-Deno.test("Utf16.LEEncoder.encode(string) - prependBOM", () => {
-  const encoder = new Utf16.LEEncoder({ prependBOM: true });
+Deno.test("Utf16.Le.Encoder.encode(string) - prependBOM", () => {
+  const encoder = new Utf16.Le.Encoder({ prependBOM: true });
 
   // encode()
   assertStrictEquals(
@@ -189,8 +189,8 @@ Deno.test("Utf16.LEEncoder.encode(string) - prependBOM", () => {
   );
 });
 
-Deno.test("Utf16.LEEncoder.encode(string) - fatal", () => {
-  const encoder = new Utf16.LEEncoder({ fatal: true });
+Deno.test("Utf16.Le.Encoder.encode(string) - fatal", () => {
+  const encoder = new Utf16.Le.Encoder({ fatal: true });
 
   // encode()
   assertStrictEquals(
@@ -262,14 +262,14 @@ Deno.test("Utf16.LEEncoder.encode(string) - fatal", () => {
   );
 });
 
-Deno.test("Utf16.LEEncoder", () => {
+Deno.test("Utf16.Le.Encoder", () => {
   const str1 = "👪a👨‍👦👨‍👨‍👦‍👦";
 
-  const encoder1 = new Utf16.LEEncoder();
+  const encoder1 = new Utf16.Le.Encoder();
   const encoded1 = encoder1.encode(str1);
   assertStrictEquals(decoder.decode(encoded1), str1);
 
-  const encoder2 = new Utf16.LEEncoder({ prependBOM: true });
+  const encoder2 = new Utf16.Le.Encoder({ prependBOM: true });
   const encoded2 = encoder2.encode(str1);
   assertStrictEquals(decoder.decode(encoded2), str1);
 });

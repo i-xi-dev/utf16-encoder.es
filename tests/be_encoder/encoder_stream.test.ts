@@ -1,8 +1,6 @@
 import { assertStrictEquals } from "../deps.ts";
 import { Utf16 } from "../../mod.ts";
 
-const decoder = new TextDecoder("utf-16be");
-
 if (!globalThis.ReadableStream) {
   const nodeUrl = "node:stream/web";
   const nsw = await import(nodeUrl);
@@ -10,23 +8,23 @@ if (!globalThis.ReadableStream) {
   globalThis.WritableStream = nsw.WritableStream;
 }
 
-Deno.test("Utf16.BEEncoderStream.prototype.encoding", () => {
-  const encoder = new Utf16.BEEncoderStream();
+Deno.test("Utf16.Be.EncoderStream.prototype.encoding", () => {
+  const encoder = new Utf16.Be.EncoderStream();
   assertStrictEquals(encoder.encoding, "utf-16be");
 });
 
-Deno.test("Utf16.BEEncoderStream.prototype.fatal", () => {
-  const encoder1 = new Utf16.BEEncoderStream({ fatal: true });
+Deno.test("Utf16.Be.EncoderStream.prototype.fatal", () => {
+  const encoder1 = new Utf16.Be.EncoderStream({ fatal: true });
   assertStrictEquals(encoder1.fatal, true);
 
-  const encoder2 = new Utf16.BEEncoderStream({ fatal: false });
+  const encoder2 = new Utf16.Be.EncoderStream({ fatal: false });
   assertStrictEquals(encoder2.fatal, false);
 
-  const encoder3 = new Utf16.BEEncoderStream();
+  const encoder3 = new Utf16.Be.EncoderStream();
   assertStrictEquals(encoder3.fatal, false);
 });
 
-Deno.test("Utf16.BEEncoderStream.prototype.writable", async () => {
+Deno.test("Utf16.Be.EncoderStream.prototype.writable", async () => {
   const td = [
     "ABC",
     "あ",
@@ -72,7 +70,7 @@ Deno.test("Utf16.BEEncoderStream.prototype.writable", async () => {
     });
   })();
 
-  const encoder1 = new Utf16.BEEncoderStream();
+  const encoder1 = new Utf16.Be.EncoderStream();
 
   const result = new Uint8Array(40);
   let written = 0;
@@ -102,7 +100,7 @@ Deno.test("Utf16.BEEncoderStream.prototype.writable", async () => {
   );
 });
 
-Deno.test("Utf16.BEEncoderStream.prototype.writable - 2", async () => {
+Deno.test("Utf16.Be.EncoderStream.prototype.writable - 2", async () => {
   const td = [
     "ABC",
     "あ",
@@ -148,7 +146,7 @@ Deno.test("Utf16.BEEncoderStream.prototype.writable - 2", async () => {
     });
   })();
 
-  const encoder1 = new Utf16.BEEncoderStream();
+  const encoder1 = new Utf16.Be.EncoderStream();
 
   const result = new Uint8Array(40);
   let written = 0;
