@@ -7,8 +7,6 @@ import {
   Uint8,
 } from "../deps.ts";
 
-//TODO 末尾に単独の上位サロゲートが連続してたらブラウザ等はどうしてるのか → 上位でも下位でも単独サロゲートはU+FFFDとしてエンコード
-
 const _BE_LABEL = "UTF-16BE";
 const _LE_LABEL = "UTF-16LE";
 
@@ -16,7 +14,7 @@ const _MAX_BYTES_PER_RUNE = 4;
 
 type _RuneBytes = Array<Uint8>; // [Uint8, Uint8] | [Uint8, Uint8, Uint8, Uint8] ;
 
-// プラットフォームのバイトオーダーでエンコード
+//TODO プラットフォームのバイトオーダーでエンコード
 // function _encode(
 //   srcString: string,
 //   dstBuffer: ArrayBuffer,
@@ -63,7 +61,7 @@ function _encodeShared(
     } else {
       if (options.fatal === true) {
         throw new TypeError(
-          `encode-error: \uFFFD ${CodePoint.toString(codePoint)}`,
+          `encode-error: ${CodePoint.toString(codePoint)}`,
         );
       } else {
         for (const byte of options.replacementBytes) {
