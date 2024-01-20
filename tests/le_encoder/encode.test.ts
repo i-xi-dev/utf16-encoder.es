@@ -54,6 +54,16 @@ Deno.test("Utf16.Le.Encoder.encode(string)", () => {
     "[66,48,68,48,253,255,255,215,70,48]",
   );
 
+  assertStrictEquals(
+    JSON.stringify([...encoder.encode("あいう\uD800")]),
+    "[66,48,68,48,70,48,253,255]",
+  );
+
+  assertStrictEquals(
+    JSON.stringify([...encoder.encode("あいう\uDC00")]),
+    "[66,48,68,48,70,48,253,255]",
+  );
+
   // encode(any)
   assertStrictEquals(
     JSON.stringify([...encoder.encode(0 as unknown as string)]),
@@ -116,6 +126,16 @@ Deno.test("Utf16.Le.Encoder.encode(string) - strict", () => {
   assertStrictEquals(
     JSON.stringify([...encoder.encode("あい\uD800\uD7FFう")]),
     "[66,48,68,48,253,255,255,215,70,48]",
+  );
+
+  assertStrictEquals(
+    JSON.stringify([...encoder.encode("あいう\uD800")]),
+    "[66,48,68,48,70,48,253,255]",
+  );
+
+  assertStrictEquals(
+    JSON.stringify([...encoder.encode("あいう\uDC00")]),
+    "[66,48,68,48,70,48,253,255]",
   );
 
   // encode(any)
@@ -182,6 +202,16 @@ Deno.test("Utf16.Le.Encoder.encode(string) - prependBOM", () => {
     "[255,254,66,48,68,48,253,255,255,215,70,48]",
   );
 
+  assertStrictEquals(
+    JSON.stringify([...encoder.encode("あいう\uD800")]),
+    "[255,254,66,48,68,48,70,48,253,255]",
+  );
+
+  assertStrictEquals(
+    JSON.stringify([...encoder.encode("あいう\uDC00")]),
+    "[255,254,66,48,68,48,70,48,253,255]",
+  );
+
   // encode(any)
   assertStrictEquals(
     JSON.stringify([...encoder.encode(0 as unknown as string)]),
@@ -228,7 +258,7 @@ Deno.test("Utf16.Le.Encoder.encode(string) - fatal", () => {
       encoder.encode("あい\uDC00う");
     },
     TypeError,
-    "encode-error: \uFFFD U+DC00",
+    "encode-error: U+DC00",
   );
 
   assertThrows(
@@ -236,7 +266,7 @@ Deno.test("Utf16.Le.Encoder.encode(string) - fatal", () => {
       encoder.encode("あい\uDC00\uD800う");
     },
     TypeError,
-    "encode-error: \uFFFD U+DC00",
+    "encode-error: U+DC00",
   );
 
   assertThrows(
@@ -244,7 +274,7 @@ Deno.test("Utf16.Le.Encoder.encode(string) - fatal", () => {
       encoder.encode("あい\uD800\uD800う");
     },
     TypeError,
-    "encode-error: \uFFFD U+D800",
+    "encode-error: U+D800",
   );
 
   assertThrows(
@@ -252,7 +282,23 @@ Deno.test("Utf16.Le.Encoder.encode(string) - fatal", () => {
       encoder.encode("あい\uD800\uD7FFう");
     },
     TypeError,
-    "encode-error: \uFFFD U+D800",
+    "encode-error: U+D800",
+  );
+
+  assertThrows(
+    () => {
+      encoder.encode("あいう\uD800");
+    },
+    TypeError,
+    "encode-error: U+D800",
+  );
+
+  assertThrows(
+    () => {
+      encoder.encode("あいう\uDC00");
+    },
+    TypeError,
+    "encode-error: U+DC00",
   );
 
   // encode(any)
