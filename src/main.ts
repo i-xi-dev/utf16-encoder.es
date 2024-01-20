@@ -7,6 +7,8 @@ import {
   Uint8,
 } from "../deps.ts";
 
+//TODO 末尾に単独の上位サロゲートが連続してたらブラウザ等はどうしてるのか → 上位でも下位でも単独サロゲートはU+FFFDとしてエンコード
+
 const _BE_LABEL = "UTF-16BE";
 const _LE_LABEL = "UTF-16LE";
 
@@ -22,7 +24,7 @@ type _RuneBytes = Array<Uint8>; // [Uint8, Uint8] | [Uint8, Uint8, Uint8, Uint8]
 //     fatal: boolean; // エンコードのエラーは単独のサロゲートの場合のみ
 //     replacementBytes: Array<Uint8>;
 //   },
-// ): TextEncoderEncodeIntoResult {
+// ): TextEncoding.EncodeResult {
 // }
 
 function _encodeShared(
@@ -33,28 +35,30 @@ function _encodeShared(
     replacementBytes: Array<Uint8>;
   },
   littleEndian: boolean,
-): TextEncoderEncodeIntoResult {
+): TextEncoding.EncodeResult {
   const dstView = new DataView(dstBuffer);
 
-  let read = 0;
-  let written = 0;
+  let readCharCount = 0;
+  let writtenByteCount = 0;
 
   for (const rune of srcString) {
     const codePoint = rune.codePointAt(0) as CodePoint;
 
-    if ((written + (rune.length * Uint16.BYTES)) > dstView.byteLength) {
+    if (
+      (writtenByteCount + (rune.length * Uint16.BYTES)) > dstView.byteLength
+    ) {
       break;
     }
-    read = read + rune.length;
+    readCharCount = readCharCount + rune.length;
 
     if (CodePoint.isSurrogateCodePoint(codePoint) !== true) {
       for (let i = 0; i < rune.length; i++) {
         dstView.setUint16(
-          written,
+          writtenByteCount,
           rune.charCodeAt(i),
           littleEndian,
         );
-        written = written + Uint16.BYTES;
+        writtenByteCount = writtenByteCount + Uint16.BYTES;
       }
     } else {
       if (options.fatal === true) {
@@ -63,16 +67,16 @@ function _encodeShared(
         );
       } else {
         for (const byte of options.replacementBytes) {
-          dstView.setInt8(written, byte);
-          written = written + Uint8.BYTES;
+          dstView.setInt8(writtenByteCount, byte);
+          writtenByteCount = writtenByteCount + Uint8.BYTES;
         }
       }
     }
   }
 
   return {
-    read,
-    written,
+    readCharCount,
+    writtenByteCount,
   };
 }
 
@@ -83,7 +87,7 @@ function _encodeBe(
     fatal: boolean;
     replacementBytes: Array<Uint8>;
   },
-): TextEncoderEncodeIntoResult {
+): TextEncoding.EncodeResult {
   return _encodeShared(srcString, dstBuffer, options, false);
 }
 
@@ -94,7 +98,7 @@ function _encodeLe(
     fatal: boolean;
     replacementBytes: Array<Uint8>;
   },
-): TextEncoderEncodeIntoResult {
+): TextEncoding.EncodeResult {
   return _encodeShared(srcString, dstBuffer, options, true);
 }
 
@@ -109,7 +113,7 @@ function _getReplacement(
   if (StringEx.isString(replacementRune) && (replacementRune.length === 1)) {
     try {
       const tmp = new ArrayBuffer(_MAX_BYTES_PER_RUNE);
-      const { written } = _encodeShared(
+      const { writtenByteCount } = _encodeShared(
         replacementRune,
         tmp,
         {
@@ -122,7 +126,9 @@ function _getReplacement(
       );
       return {
         rune: replacementRune,
-        bytes: [...new Uint8Array(tmp.slice(0, written))] as Array<Uint8>,
+        bytes: [...new Uint8Array(tmp.slice(0, writtenByteCount))] as Array<
+          Uint8
+        >,
       };
     } catch {
       // _DEFAULT_REPLACEMENT_BYTES を返す
@@ -184,6 +190,10 @@ export namespace Utf16 {
           maxBytesPerRune: _MAX_BYTES_PER_RUNE,
         });
       }
+
+      get [Symbol.toStringTag](): string {
+        return "Utf16.Be.EncoderStream";
+      }
     }
   }
 
@@ -217,6 +227,10 @@ export namespace Utf16 {
           strict: options?.strict === true,
           maxBytesPerRune: _MAX_BYTES_PER_RUNE,
         });
+      }
+
+      get [Symbol.toStringTag](): string {
+        return "Utf16.Le.EncoderStream";
       }
     }
   }

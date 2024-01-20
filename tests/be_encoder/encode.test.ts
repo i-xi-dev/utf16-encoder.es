@@ -70,7 +70,7 @@ Deno.test("Utf16.Be.Encoder.encode(string) - strict", () => {
       encoder.encode();
     },
     TypeError,
-    "input",
+    "srcRunesAsString",
   );
 
   // encode(string)
@@ -124,7 +124,7 @@ Deno.test("Utf16.Be.Encoder.encode(string) - strict", () => {
       encoder.encode(0 as unknown as string);
     },
     TypeError,
-    "input",
+    "srcRunesAsString",
   );
 });
 

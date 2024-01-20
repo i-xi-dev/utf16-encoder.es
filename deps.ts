@@ -3,7 +3,7 @@ export {
   Rune,
   StringEx,
 } from "https://raw.githubusercontent.com/i-xi-dev/string.es/6.0.1/mod.ts";
-export { TextEncoding } from "https://raw.githubusercontent.com/i-xi-dev/text-encoding.es/6.0.0/mod.ts";
+export { TextEncoding } from "https://raw.githubusercontent.com/i-xi-dev/text-encoding.es/6.3.2/mod.ts";
 export {
   Uint16,
   Uint8,
