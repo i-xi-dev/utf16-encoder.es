@@ -65,7 +65,7 @@ function _encodeShared(
         );
       } else {
         for (const byte of options.replacementBytes) {
-          dstView.setInt8(writtenByteCount, byte);
+          dstView.setUint8(writtenByteCount, byte);
           writtenByteCount = writtenByteCount + Uint8.BYTES;
         }
       }
